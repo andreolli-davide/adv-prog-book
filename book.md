@@ -1,7 +1,7 @@
 # Advanced Programming Book
 By Davide Andreolli
 
-## Gimme Double \(2022/11\)
+## Gimme Double (2022/11 - 2023/01)
 > Define the `Doublable` trait with a method `gimme_double` implement `Doublable` for `i32`, `gimme_double` returns a new `i32` that is twice self implement `Doublable` for `String`, `gimme_double` returns a new `String` that is self concatenated with self implement a function `printdouble` that takes a `Doublable` and prints the argument and its `gimme_double` using the `":?"` formatter it behaves as the example: _doubling 5 is 10 doubling "what" is "whatwhat"_.
 
 ```rust
@@ -28,7 +28,7 @@ fn print_double<T: Doublable + Debug>(x: T) {
 }
 ```
 
-## Wrapper for i32 odds \(2022/11\)
+## Wrapper for i32 odds (2022/11)
 > Define a struct `Wrapper` that contains a field `v` of type `Vec<i32>` define an iterator for `Wrapper` to cycle over the elements of the vector the iterator will skip every other element, effectively accessing only those at odd index in the inner vector (the first element is at index 0)
 
 ```rust
@@ -59,11 +59,11 @@ impl Wrapper {
 }
 ```
 
-## BasicBox Sum \(2022/11\)
+## BasicBox Sum (2022/11)
 > Write a function `basicbox_sum` that takes a vector of Strings and returns a vector of Boxes of usizes the returned vector contains all the lengths of the input vector followed by a final element that sums all the previous lengths
 
 ```rust
-fn basicboc_sum(v: Vec<String>) -> Vec<Box<usize>> {
+fn basicbox_sum(v: Vec<String>) -> Vec<Box<usize>> {
     let mut result = v
         .iter()
         .map(|s| s.len())
@@ -75,6 +75,18 @@ fn basicboc_sum(v: Vec<String>) -> Vec<Box<usize>> {
     ));
 
     result
+}
+```
+
+## BasicBox Inc (2023/01)
+> Write a function `basicbox_inc` that takes a vector of `Strings` and returns a vector of `Box` of `usize` the returned vector contains all the lengths of the input vector + 1
+
+```rust
+fn basicbox_sum(v: Vec<String>) -> Vec<Box<usize>> {
+    v.iter()
+        .map(|s| s.len() + 1)
+        .map(|i| Box::new(i))
+        .collect::<Vec<Box<usize>>>()
 }
 ```
 

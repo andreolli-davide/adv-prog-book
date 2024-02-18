@@ -1,4 +1,8 @@
-use std::{fmt::{Debug, Formatter}, rc::Rc, cell::RefCell};
+use std::{
+    cell::RefCell,
+    fmt::{Debug, Formatter},
+    rc::Rc,
+};
 
 type NodeRef<T> = Rc<RefCell<Node<T>>>;
 
@@ -7,9 +11,14 @@ struct Node<T> {
     adjacent: Vec<NodeRef<T>>,
 }
 
-impl<T: Debug> Debug for Node<T>{
+impl<T: Debug> Debug for Node<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f,"iv: {:?}, adj: {}", self.inner_value, self.adjacent.len())
+        write!(
+            f,
+            "iv: {:?}, adj: {}",
+            self.inner_value,
+            self.adjacent.len()
+        )
     }
 }
 
@@ -17,14 +26,14 @@ struct Graph<T> {
     nodes: Vec<NodeRef<T>>,
 }
 
-pub trait SameBool{
-    fn samebool(&self, other:&Self)->bool;
+pub trait SameBool {
+    fn samebool(&self, other: &Self) -> bool;
 }
 
 #[derive(Debug)]
-pub struct Content{
-    pub i:i32,
-    pub b:bool
+pub struct Content {
+    pub i: i32,
+    pub b: bool,
 }
 
 impl Content {
@@ -33,7 +42,7 @@ impl Content {
     }
 }
 
-impl SameBool for Content{
+impl SameBool for Content {
     fn samebool(&self, other: &Self) -> bool {
         self.b == other.b
     }
@@ -46,7 +55,6 @@ impl<T> Graph<T> {
 }
 
 impl<T: SameBool + PartialOrd> Graph<T> {
-
     fn add_node(&mut self, value: T) -> () {
         let mut new_node = Node {
             inner_value: value,
@@ -62,7 +70,12 @@ impl<T: SameBool + PartialOrd> Graph<T> {
 
         self.nodes
             .iter()
-            .filter(|n| new_node.borrow().inner_value.samebool(&n.borrow().inner_value))
+            .filter(|n| {
+                new_node
+                    .borrow()
+                    .inner_value
+                    .samebool(&n.borrow().inner_value)
+            })
             .for_each(|n| n.borrow_mut().adjacent.push(Rc::clone(&new_node)));
 
         self.nodes.push(new_node);
@@ -96,4 +109,3 @@ mod graph_samebool_tests {
         }
     }
 }
-

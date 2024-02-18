@@ -1,4 +1,4 @@
-fn basicboc_sum(v: Vec<String>) -> Vec<Box<usize>> {
+fn basicbox_sum(v: Vec<String>) -> Vec<Box<usize>> {
     let mut result = v
         .iter()
         .map(|s| s.len())
@@ -19,7 +19,7 @@ mod basicbox_sum_tests {
     #[test]
     fn test_basicbox_sum() {
         let v = vec!["hello".to_string(), "world".to_string()];
-        let result = basicboc_sum(v);
+        let result = basicboum(v);
         assert_eq!(vec![Box::new(5), Box::new(5), Box::new(10)], result);
     }
 }
