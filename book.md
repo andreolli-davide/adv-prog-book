@@ -78,3 +78,90 @@ fn basicboc_sum(v: Vec<String>) -> Vec<Box<usize>> {
 }
 ```
 
+## List with boxes (2022/11)
+> Take the following `List` and `Node` structs define these functions and methods for `List`, each one defines how many points it yields 
+> - [7] remove: takes a position `p:i32` where to remove the element from the list and it returns a `Result<(),String>` The function removes the node at position `p` or returns the string `"wrong position"` if the list has fewer than `p` elements. That is: removing from position 2 in `[10,20,30]` will return `[10,20]`. Removing from position 3 in `[10,20,30]` will return `Err("wrong position)` removing from position 0 in `[10,20,30]` will return `[20,30]`. 
+> - [2] pop: removes the head of the list 
+> - [2] pop_last: removes the last element of the list 
+> - [4] get: takes a position `p` and returns an optional pointer to the pth T-typed element in the list (That is, a pointer to the element, not a pointer to the `Node`) 
+>
+> Note: the tests already include the code below, all you need to paste as the answer are the impl blocks and possible imports (use ...).
+
+```rust
+// Given code
+#[derive(Debug)]
+pub struct List<T> {
+    head: Link<T>,
+    len: i32,
+}
+
+type Link<T> = Option<Box<Node<T>>>;
+
+#[derive(Debug)]
+struct Node<T> {
+    elem: T,
+    next: Link<T>,
+}
+
+#[derive(Debug)]
+pub struct Content {
+    s: String,
+    b: bool,
+    i: i32,
+}
+
+impl Content {
+    pub fn new_with(s: String, b: bool, i: i32) -> Content {
+        return Content { s, b, i };
+    }
+}
+
+
+// Exercise code
+impl<T> List<T> {
+
+    fn remove(&mut self, mut pos: i32) -> Result<(), String> {
+
+        if pos < 0 || pos >= self.len {
+            return Err("wrong position".to_string());
+        }
+
+        let mut current = &mut self.head;
+
+        while pos > 0 && current.is_some() {
+            current = &mut current.as_mut().unwrap().next;
+            pos -= 1;
+        }
+
+        let next = current.as_mut().unwrap().next.take();
+        *current = next;
+        self.len -= 1;
+
+        Ok(())
+    }
+
+    fn pop(&mut self) -> Result<(), String> {
+        self.remove(0)
+    }
+
+    fn pop_last(&mut self) -> Result<(), String> {
+        self.remove(self.len - 1)
+    }
+
+    fn get(&self, mut pos: i32) -> Option<&T> {
+        if pos < 0 || pos >= self.len {
+            return None;
+        }
+
+        let mut current = &self.head;
+
+        while pos > 0 {
+            current = &current.as_ref().unwrap().next;
+            pos -= 1;
+        }
+
+        Some(&current.as_ref().unwrap().elem)
+    }
+}
+```
+
