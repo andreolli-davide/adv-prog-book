@@ -120,6 +120,46 @@ impl Wrapper {
 }
 ```
 
+## Wrapper ConsIter (2024/01)
+> Write a struct `ConsIter` that has a field `iter` of type `Chars` `(std::str::Chars)`. Write a struct `Wrapper` that has a field `inner` of type `String`, write a method `iter` for `Wrapper` that returns a `ConsIter`. Implement `Iterator` for `ConsIter` that iterates over chars, it yields all the characters that are part of the ascii code and aren't vocals ("aeiou").
+> 
+> Hints: use is_ascii() to check if a char is actually ascii, use to_ascii_lowercase() for managing mixed-cased words.
+
+```rust
+use std::str::Chars;
+
+struct ConsIter<'a> {
+    iter: Chars<'a>,
+}
+
+struct Wrapper {
+    inner: String,
+}
+
+impl Wrapper {
+    fn iter(&self) -> ConsIter {
+        ConsIter {
+            iter: self.inner.chars(),
+        }
+    }
+}
+
+impl<'a> Iterator for ConsIter<'a> {
+    type Item = char;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let mut result = None;
+        while let Some(c) = self.iter.next() {
+            if c.is_ascii() && !['a', 'e', 'i', 'o', 'u'].contains(&c.to_ascii_lowercase()) {
+                result = Some(c);
+                break;
+            }
+        }
+        result
+    }
+}
+```
+
 ## BasicBox Sum (2022/11)
 > Write a function `basicbox_sum` that takes a vector of Strings and returns a vector of Boxes of usizes the returned vector contains all the lengths of the input vector followed by a final element that sums all the previous lengths
 
