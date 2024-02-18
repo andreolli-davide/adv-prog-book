@@ -165,3 +165,95 @@ impl<T> List<T> {
 }
 ```
 
+## Graph and SameBool (2022/11)
+
+> `SameBool` is a Trait. It has a method `samebool` that takes a `SameBool` and it returns a `bool`. `Content` is a struct with an `i32` and a `bool`. Two Contents can be compared (<, >, ==) by comparing their `i32` field ([2 points]). `Content` implements `SameBool`: the method of the trait returns whether self has the same bool as the parameter ([1] point). Define a `Graph` as a vector of `Node` whose elements are arbitrary `T` - add a function for creating an empty graph ([1] points). When `T` implements `SameBool` and `PartialOrd`, define function `add_node` that adds a `Node` to the graph with these connections: 
+> - the added node gets as neighbour all nodes in the graph that are < than it 
+> - the added node becomes a neighbour of all the nodes with the samebool ([6] points).
+
+Note: the tests already include the code below, all you need to paste as the answer are the impl blocks and possible imports (use ... ).
+
+```rust
+// Given code
+type NodeRef<T> = Rc<RefCell<Node<T>>>;
+
+struct Node<T> {
+    inner_value: T,
+    adjacent: Vec<NodeRef<T>>,
+}
+
+impl<T: Debug> Debug for Node<T>{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f,"iv: {:?}, adj: {}", self.inner_value, self.adjacent.len())
+    }
+}
+
+struct Graph<T> {
+    nodes: Vec<NodeRef<T>>,
+}
+
+pub trait SameBool{
+    fn samebool(&self, other:&Self)->bool;
+}
+
+#[derive(Debug)]
+pub struct Content{
+    pub i:i32,
+    pub b:bool
+}
+
+// Exercise code
+impl Content {
+    pub fn new_with(i: i32, b: bool) -> Content {
+        Content { i, b }
+    }
+}
+
+impl SameBool for Content{
+    fn samebool(&self, other: &Self) -> bool {
+        self.b == other.b
+    }
+}
+
+impl<T> Graph<T> {
+    fn new() -> Self {
+        Graph { nodes: Vec::new() }
+    }
+}
+
+impl<T: SameBool + PartialOrd> Graph<T> {
+
+    fn add_node(&mut self, value: T) -> () {
+        let mut new_node = Node {
+            inner_value: value,
+            adjacent: Vec::new(),
+        };
+
+        self.nodes
+            .iter()
+            .filter(|n| n.borrow().inner_value < new_node.inner_value)
+            .for_each(|n| new_node.adjacent.push(Rc::clone(n)));
+
+        let new_node = Rc::new(RefCell::new(new_node));
+
+        self.nodes
+            .iter()
+            .filter(|n| new_node.borrow().inner_value.samebool(&n.borrow().inner_value))
+            .for_each(|n| n.borrow_mut().adjacent.push(Rc::clone(&new_node)));
+
+        self.nodes.push(new_node);
+    }
+}
+
+impl PartialEq for Content {
+    fn eq(&self, other: &Self) -> bool {
+        self.i == other.i
+    }
+}
+
+impl PartialOrd for Content {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.i.partial_cmp(&other.i)
+    }
+}
+```
