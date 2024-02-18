@@ -5,5 +5,6 @@ mod graph_samebool;
 mod list_box;
 mod list_box_sorted;
 mod wrapper_i32_odds;
+mod tree_partialord;
 
 fn main() {}

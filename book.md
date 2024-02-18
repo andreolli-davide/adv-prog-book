@@ -388,3 +388,124 @@ impl PartialOrd for Content {
     }
 }
 ```
+
+## Tree PartialOrd (2023/01)
+> Take the following `Tree`, `Node`, and `Content` structs define these functions/methods for `Tree`:
+> `new` [1] : creates an empty tree.
+> `add_node` [6]: takes a generic element `el` and adds a node to the tree whose content is `el` and such that nodes on the left have contents which are < smaller than the current node, nodes on the center have contents which are == to the current node, nodes on the right have contents which are > than the current node.
+> `howmany_smaller` [4] : takes a generic element `el` and returns an `i32` telling how many nodes does the tree have that are < than `el`.
+
+Implement `PartialOrd` for `Content` [4]: contents can be compared by comparing the len of their `String` fields.
+
+Note: the tests already include the code below, all you need to paste as the answer are the impl blocks and possible imports (use ...).
+
+```rust
+use std::{cmp::Ordering, collections::VecDeque};
+
+// Given code
+#[derive(Debug)]
+pub struct Content{
+    pub i:i32,
+    pub s:String
+}
+
+impl Content {
+    pub fn new(i: i32, s: String) -> Content {
+        Content { i, s }
+    }
+}
+
+#[derive(Debug)]
+struct Node<T> {
+    elem: T,
+    left: TreeLink<T>,
+    center: TreeLink<T>,
+    right: TreeLink<T>,
+}
+
+impl<T> Node<T> {
+    pub fn new(elem:T) -> Node<T> {
+        Node {
+            elem,
+            left:None,
+            center:None,
+            right:None
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct Tree<T> {
+    root: TreeLink<T>,
+    size : i32,
+}
+
+type TreeLink<T> = Option<Box<Node<T>>>;
+
+// Exercise code
+impl<T> Tree<T> {
+
+    fn new() -> Self {
+        Self {
+            root: None,
+            size: 0
+        }
+    }
+}
+
+impl<T: PartialOrd> Tree<T> {
+    
+    fn add_node(&mut self, el: T) -> () {
+        let mut current = &mut self.root;
+        while let Some(node) = current {
+            current = match el.partial_cmp(&node.elem).unwrap() {
+                Ordering::Less => &mut node.left,
+                Ordering::Equal => &mut node.center,
+                Ordering::Greater => &mut node.right
+            }
+        }
+        *current = Some(Box::new(Node::new(el)));
+        self.size += 1;
+    }
+
+    fn howmany_smaller(&self, el: &T) -> i32 {
+        if let Some(root) = self.root.as_ref() {
+            let mut count = 0;
+            let mut queue = VecDeque::new();
+            queue.push_back(root.as_ref());
+
+            while let Some(current) = queue.pop_front() {
+                if &current.elem < el {
+                    count += 1;
+                }
+                if let Some(node) = current.left.as_ref() {
+                    queue.push_back(node);
+                }
+                if let Some(node) = current.center.as_ref() {
+                    queue.push_back(node);
+                }
+                if let Some(node) = current.right.as_ref() {
+                    queue.push_back(node);
+                }
+            }
+
+            count
+        }
+        else {
+            0
+        }
+    }
+}
+
+impl PartialEq for Content {
+    fn eq(&self, other: &Self) -> bool {
+        self.s.len() == other.s.len()
+    }
+}
+
+impl PartialOrd for Content {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.s.len().partial_cmp(&other.s.len())
+    }
+}
+```
