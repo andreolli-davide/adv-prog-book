@@ -19,7 +19,7 @@ mod basicbox_sum_tests {
     #[test]
     fn test_basicbox_sum() {
         let v = vec!["hello".to_string(), "world".to_string()];
-        let result = basicboum(v);
+        let result = basicbox_sum(v);
         assert_eq!(vec![Box::new(5), Box::new(5), Box::new(10)], result);
     }
 }

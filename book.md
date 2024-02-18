@@ -177,7 +177,97 @@ impl<T> List<T> {
 }
 ```
 
-## Graph and SameBool (2022/11)
+## Sorted list (2023/01)
+> Take the following `List` and `Node` structs define these functions and methods for `List`, each one defines how many points it yields 
+> - [1] `new`: returns an empty list 
+> - [6] `add`: takes an element `e:T`. The function inserts the element e while keeping the list sorted. That is: adding 3 to list [] returns [3] adding 3 to list [0,4] returns [0,3,4] adding 3 to list [0,1] returns [0,1,3] 
+> - [4] `get`: takes a position p and returns an optional pointer to the pth T-typed element in the list (That is, a pointer to the element, not a pointer to the Node) 
+
+The list must work on Content, add the code that allows this ([4] points). The comparison between different Content structs only compares their i field That is, {"what",false,2} < {"super",true,5} < {"",false,10} 
+
+Note: the tests already include the code below, all you need to paste as the answer are the impl blocks and possible imports (use ... ).
+
+```rust
+// Given code
+#[derive(Debug)]
+pub struct List<T> {
+    head: Link<T>,
+    len: i32,
+}
+
+type Link<T> = Option<Box<Node<T>>>;
+
+#[derive(Debug)]
+struct Node<T> {
+    elem: T,
+    next: Link<T>,
+}
+
+#[derive(Debug)]
+pub struct Content {
+    s : String, b : bool, i : i32,
+}
+
+impl Content {
+    pub fn new_with(s:String, b:bool, i:i32) -> Content {
+        return Content{s,b,i};
+    }
+}
+
+// Execise code
+impl<T> List<T> {
+    fn new() -> Self {
+        List { head: None, len: 0 }
+    }
+
+    fn get(&self, mut pos: i32) -> Option<&T> {
+        let mut head = self.head.as_ref();
+        while pos > 0 && head.is_some() {
+            head = head.unwrap().next.as_ref();
+            pos -= 1;
+        }
+        if let Some(head) = head {
+            Some(&head.elem)
+        }
+        else {
+            None
+        }    
+    }
+}
+
+impl<T: PartialOrd> List<T> {
+
+    fn add(&mut self, elem: T) {
+        
+        let mut current = &mut self.head;
+
+        while current.as_ref().map_or(false, |node| elem > node.elem) {
+            current = &mut current.as_mut().unwrap().next;
+        }
+
+        let new_node = Box::new(Node {
+            elem,
+            next: current.take(),
+        });
+
+        *current = Some(new_node);
+    }
+}
+
+impl PartialEq for Content {
+    fn eq(&self, other: &Self) -> bool {
+        self.i == other.i
+    }
+}
+
+impl PartialOrd for Content {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.i.partial_cmp(&other.i)
+    }
+}
+```
+
+## Graph and SameBool (2022/11 - 2023/01)
 
 > `SameBool` is a Trait. It has a method `samebool` that takes a `SameBool` and it returns a `bool`. `Content` is a struct with an `i32` and a `bool`. Two Contents can be compared (<, >, ==) by comparing their `i32` field ([2 points]). `Content` implements `SameBool`: the method of the trait returns whether self has the same bool as the parameter ([1] point). Define a `Graph` as a vector of `Node` whose elements are arbitrary `T` - add a function for creating an empty graph ([1] points). When `T` implements `SameBool` and `PartialOrd`, define function `add_node` that adds a `Node` to the graph with these connections: 
 > - the added node gets as neighbour all nodes in the graph that are < than it 
