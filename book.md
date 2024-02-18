@@ -58,3 +58,23 @@ impl Wrapper {
     }
 }
 ```
+
+## BasicBox Sum \(2022/11\)
+> Write a function `basicbox_sum` that takes a vector of Strings and returns a vector of Boxes of usizes the returned vector contains all the lengths of the input vector followed by a final element that sums all the previous lengths
+
+```rust
+fn basicboc_sum(v: Vec<String>) -> Vec<Box<usize>> {
+    let mut result = v
+        .iter()
+        .map(|s| s.len())
+        .map(|i| Box::new(i))
+        .collect::<Vec<Box<usize>>>();
+
+    result.push(Box::new(
+        v.iter().map(|s| s.len()).reduce(|l, r| l + r).unwrap_or(0),
+    ));
+
+    result
+}
+```
+

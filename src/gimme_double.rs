@@ -5,7 +5,7 @@ trait Doublable {
 }
 
 impl Doublable for i32 {
-fn gimme_double(&self) -> i32 {
+    fn gimme_double(&self) -> i32 {
         self * 2
     }
 }
@@ -31,7 +31,9 @@ mod gimme_double_tests {
 
     #[test]
     fn test_gimme_double_string() {
-        assert_eq!(String::from("hellohello"), String::from("hello").gimme_double());
+        assert_eq!(
+            String::from("hellohello"),
+            String::from("hello").gimme_double()
+        );
     }
 }
-
