@@ -59,6 +59,35 @@ impl Wrapper {
 }
 ```
 
+## Wrapper for string lengths (2023/01)
+> Define a struct `Wrapper` that contains a field `v` of type `Vec<String>` define an iterator for `Wrapper` to cycle over the elements of the vector instead of returning a pointer to the elements of `v`, the iterator returns a the length of the elements of `v`.
+
+```rust
+struct Wrapper {
+    v: Vec<String>,
+}
+
+impl Iterator for Wrapper {
+    type Item = usize;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(s) = self.v.clone().get(0) {
+            self.v.remove(0);
+            Some(s.len())
+        } 
+        else {
+            None
+        }
+    }
+}
+
+impl Wrapper {
+    fn iter(&self) -> Iterator<Item = usize> {
+        self.clone()
+    }
+}
+```
+
 ## BasicBox Sum (2022/11)
 > Write a function `basicbox_sum` that takes a vector of Strings and returns a vector of Boxes of usizes the returned vector contains all the lengths of the input vector followed by a final element that sums all the previous lengths
 
