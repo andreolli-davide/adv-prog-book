@@ -1,9 +1,9 @@
 use std::{cmp::Ordering, collections::VecDeque};
 
 #[derive(Debug)]
-pub struct Content{
-    pub i:i32,
-    pub s:String
+pub struct Content {
+    pub i: i32,
+    pub s: String,
 }
 
 impl Content {
@@ -21,12 +21,12 @@ struct Node<T> {
 }
 
 impl<T> Node<T> {
-    pub fn new(elem:T) -> Node<T> {
+    pub fn new(elem: T) -> Node<T> {
         Node {
             elem,
-            left:None,
-            center:None,
-            right:None
+            left: None,
+            center: None,
+            right: None,
         }
     }
 }
@@ -34,30 +34,28 @@ impl<T> Node<T> {
 #[derive(Debug)]
 pub struct Tree<T> {
     root: TreeLink<T>,
-    size : i32,
+    size: i32,
 }
 
 type TreeLink<T> = Option<Box<Node<T>>>;
 
 impl<T> Tree<T> {
-
     fn new() -> Self {
         Self {
             root: None,
-            size: 0
+            size: 0,
         }
     }
 }
 
 impl<T: PartialOrd> Tree<T> {
-    
     fn add_node(&mut self, el: T) -> () {
         let mut current = &mut self.root;
         while let Some(node) = current {
             current = match el.partial_cmp(&node.elem).unwrap() {
                 Ordering::Less => &mut node.left,
                 Ordering::Equal => &mut node.center,
-                Ordering::Greater => &mut node.right
+                Ordering::Greater => &mut node.right,
             }
         }
         *current = Some(Box::new(Node::new(el)));
@@ -86,8 +84,7 @@ impl<T: PartialOrd> Tree<T> {
             }
 
             count
-        }
-        else {
+        } else {
             0
         }
     }

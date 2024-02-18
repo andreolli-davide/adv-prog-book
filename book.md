@@ -28,6 +28,38 @@ fn print_double<T: Doublable + Debug>(x: T) {
 }
 ```
 
+## Gimme Next (2024/01)
+> Define the `Nextable` trait with a method `gimme_next` implement `Nextable` for `i32`, `gimme_next` returns the optional successor of self implement `Nextable` for `char`, `gimme_next` returns the optional new `char` that is the next `char` (as a `u32` conversion) implement a function `printnext` that takes a `Nextable` and prints the argument and its `gimme_next` using the `":?"` formatter It behaves as the example: _next of 5 is Some(6) next of 's' is Some('t')_.
+
+```rust
+use std::fmt::Debug;
+
+trait Nextable {
+    fn gimme_next(&self) -> Option<Self>
+    where Self: Sized;
+}
+
+impl Nextable for i32 {
+    fn gimme_next(&self) -> Option<Self> {
+        Some(*self + 1)
+    }
+}
+
+impl Nextable for char {
+    fn gimme_next(&self) -> Option<Self> {
+        if *self == 'z' {
+            None
+        } else {
+            Some((*self as u8 + 1) as char)
+        }
+    }
+}
+
+fn printnext(nextable: &(impl Nextable + Debug)) {
+    println!("next of {:?} is {:?}", nextable, nextable.gimme_next())
+}
+```
+
 ## Wrapper for i32 odds (2022/11)
 > Define a struct `Wrapper` that contains a field `v` of type `Vec<i32>` define an iterator for `Wrapper` to cycle over the elements of the vector the iterator will skip every other element, effectively accessing only those at odd index in the inner vector (the first element is at index 0)
 
