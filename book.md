@@ -114,7 +114,7 @@ fn toggle_and_print<T: Toggle + Debug + Clone>(value: &T) {
 }
 ```
 
-## Wrapper for i32 odds (2022/11)
+## Wrapper for i32 odds (2022/11 - 2024/01)
 > Define a struct `Wrapper` that contains a field `v` of type `Vec<i32>` define an iterator for `Wrapper` to cycle over the elements of the vector the iterator will skip every other element, effectively accessing only those at odd index in the inner vector (the first element is at index 0)
 
 ```rust
@@ -463,6 +463,50 @@ impl PartialEq for Content {
 impl PartialOrd for Content {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         self.i.partial_cmp(&other.i)
+    }
+}
+```
+
+## Shared Communication (2024/01)
+> Create a struct `SharedCommunications` that derives Debug with the following methods:
+> -[1] `new()->Self`: create a new communication object connected to no one, with no message inside.
+> -[1] `new_form(other: &Self)->Self`: create a new communication object connected to other.
+> -[2] `send(&mut self, message: String)->Result<(),()>`: try to send a message... if the structure already has a message inside, it returns an error. otherwise it memorize the message and return Ok.
+> -[2] `receive(&mut self)->Option<String>`: if the structure has a message inside it returns it. otherwise returns None.
+
+> The struct implement a kind of blocking pipe, where message can be sent only if the previous message has been received. The object must be sharable between multiple owners using the `new_form` method.
+
+```rust
+use std::{cell::RefCell, rc::Rc};
+
+struct SharedCommunication {
+    message: Rc<RefCell<Option<String>>>,
+}
+
+impl SharedCommunication {
+    fn new() -> Self {
+        Self {
+            message: Rc::new(RefCell::new(None)),
+        }
+    }
+
+    fn new_form(other: &Self) -> Self {
+        Self {
+            message: other.message.clone(),
+        }
+    }
+
+    fn send(&mut self, message: String) -> Result<(), ()> {
+        if self.message.borrow().is_none() {
+            *self.message.borrow_mut() = Some(message);
+            Ok(())
+        } else {
+            Err(())
+        }
+    }
+
+    fn receive(&mut self) -> Option<String> {
+        self.message.borrow_mut().take()
     }
 }
 ```
