@@ -245,7 +245,7 @@ fn basicbox_sum(v: Vec<String>) -> Vec<Box<usize>> {
 }
 ```
 
-## List with boxes (2022/11)
+## List with boxes (2022/11 - 2024/01)
 > Take the following `List` and `Node` structs define these functions and methods for `List`, each one defines how many points it yields 
 > - [7] remove: takes a position `p:i32` where to remove the element from the list and it returns a `Result<(),String>` The function removes the node at position `p` or returns the string `"wrong position"` if the list has fewer than `p` elements. That is: removing from position 2 in `[10,20,30]` will return `[10,20]`. Removing from position 3 in `[10,20,30]` will return `Err("wrong position)` removing from position 0 in `[10,20,30]` will return `[20,30]`. 
 > - [2] pop: removes the head of the list 
