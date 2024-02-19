@@ -8,6 +8,7 @@ mod graph_samebool;
 mod list_box;
 mod list_box_sorted;
 mod nextable;
+mod point;
 mod shared_communication;
 mod toggle;
 mod tree_partialord;

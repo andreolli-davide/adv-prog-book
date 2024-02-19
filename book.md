@@ -725,6 +725,49 @@ impl PartialOrd for Content {
 }
 ```
 
+## Point (2024/01)
+> Create a module named `point_2d` with inside a struct named `Point` with two attributes: `x` and `y`, both f32 and public.
+> 
+> [1] Create a module named `point_3d` with inside a a struct named `Point`. with two attributes.
+> 
+> - `x_y` with type `Point` of the module `point_2d`
+> - `z` with type `f32`
+> 
+> Derive debug on both `Point`. Write module named `util`. Inside the module util, use the module system to rename point_2d's `Point` to Point2D and point_3d's `Point` to Point3D. be sure to make this aliases public. [2] Inside the module util write a public function named `_3d_to_2d`. The function takes the ownership of a Point3D and returns a point2D by removing the `z` component.
+
+```rust
+mod point_2d {
+
+    #[derive(Debug, PartialEq)]
+    pub struct Point {
+        pub x: f32,
+        pub y: f32,
+    }
+}
+
+mod point_3d {
+    use super::point_2d::Point as Point2d;
+
+    #[derive(Debug)]
+    pub struct Point {
+        pub x_y: Point2d,
+        pub z: f32,
+    }
+}
+
+mod util {
+    pub use super::point_2d::Point as Point2d;
+    pub use super::point_3d::Point as Point3d;
+
+    pub fn _3d_to_2d(point: Point3d) -> Point2d {
+        Point2d {
+            x: point.x_y.x,
+            y: point.x_y.y,
+        }
+    }
+}
+```
+
 ## Finance (2024/01)
 > Define a module `finance`. Inside it, define two public modules `wallet_1` and `wallet_2`.
 > - [1] Define a struct `Wallet` inside `wallet_1` with an attribute `euro` with type `f32`.
