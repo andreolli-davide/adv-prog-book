@@ -60,6 +60,60 @@ fn printnext(nextable: &(impl Nextable + Debug)) {
 }
 ```
 
+## Toggle (2024/01)
+> Implement a trait `Toggle` with a function `toggle(&mut self)`. Implement the Trait for:
+> - `bool`: were toggling (where false become true, and true become false
+> - `i32` where the number get negated (e.g. 11 -> -11; -44 -> 44)
+> - `String` where all letters gets their case inverted (e.g "Hello World!" -> "hELLO wORLD!". you can
+
+> Assume that the string contains only ascii characters.
+
+> Write a generic function `toggle_and_print` that take as input an immutable reference of an item, and prints (with new line at the end) with the debug formatter _"... toggled is ..."_
+
+```rust
+use std::fmt::Debug;
+
+trait Toggle {
+    fn toggle(&mut self);
+}
+
+impl Toggle for bool {
+    fn toggle(&mut self) {
+        *self = !*self;
+    }
+}
+
+impl Toggle for i32 {
+    fn toggle(&mut self) {
+        *self = -*self;
+    }
+}
+
+impl Toggle for String {
+    fn toggle(&mut self) {
+        *self = self.chars()
+            .map(|c| {
+                if c.is_ascii_uppercase() {
+                    c.to_ascii_lowercase()
+                }
+                else if c.is_ascii_lowercase() {
+                    c.to_ascii_uppercase()
+                }
+                else {
+                    c
+                }
+            })
+            .collect::<String>();
+    }
+}
+
+fn toggle_and_print<T: Toggle + Debug + Clone>(value: &T) {
+    let mut cloned = value.clone();
+    cloned.toggle();
+    println!("{:?} toggled is {:?}", value, cloned);
+}
+```
+
 ## Wrapper for i32 odds (2022/11)
 > Define a struct `Wrapper` that contains a field `v` of type `Vec<i32>` define an iterator for `Wrapper` to cycle over the elements of the vector the iterator will skip every other element, effectively accessing only those at odd index in the inner vector (the first element is at index 0)
 
@@ -506,7 +560,7 @@ impl PartialOrd for Content {
 }
 ```
 
-## Tree PartialOrd (2023/01)
+## Tree PartialOrd (2023/01 - 2024/01)
 > Take the following `Tree`, `Node`, and `Content` structs define these functions/methods for `Tree`:
 > `new` [1] : creates an empty tree.
 > `add_node` [6]: takes a generic element `el` and adds a node to the tree whose content is `el` and such that nodes on the left have contents which are < smaller than the current node, nodes on the center have contents which are == to the current node, nodes on the right have contents which are > than the current node.

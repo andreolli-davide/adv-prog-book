@@ -8,6 +8,7 @@ mod graph_samebool;
 mod list_box;
 mod list_box_sorted;
 mod nextable;
+mod toggle;
 mod tree_partialord;
 mod wrapper_i32_odds;
 
