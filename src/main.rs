@@ -2,6 +2,7 @@ mod basicbox_inc;
 mod basicbox_sum;
 mod clock;
 mod consiter;
+mod finance;
 mod gimme_double;
 mod graph_samebool;
 mod list_box;

@@ -626,3 +626,42 @@ impl PartialOrd for Content {
     }
 }
 ```
+
+## Finance (2024/01)
+> Define a module `finance`. Inside it, define two public modules `wallet_1` and `wallet_2`.
+> - [1] Define a struct `Wallet` inside `wallet_1` with an attribute `euro` with type `f32`.
+> - [1] Define a struct `Wallet` inside `wallet_2` with an attribute `euro` with type `u32`, and an attribute `cents` with type `u8`
+> 
+> Derive Debug on both `Wallet`, and make all attributes public. Create two public alias inside `finance`:
+> - `Wallet1` for `wallet_1::Wallet`
+> - `Wallet2` for `wallet_2::Wallet`
+> 
+> [2] Define a public function `compare_wallet` in the module `finance` that takes two arguments: `first` with type `&Wallet1` and `second` with type `&Wallet2` the function returns true if `first` has more money that `second`, otherwise it returns false
+
+```rust
+mod finance {
+    pub mod wallet_1 {
+
+        #[derive(Debug)]
+        pub struct Wallet {
+            pub euro: f32
+        }
+    }
+
+    pub mod wallet_2 {
+
+        #[derive(Debug)]
+        pub struct Wallet {
+            pub euro: u32,
+            pub cents: u8
+        }
+    }
+
+    pub type Wallet1 = wallet_1::Wallet;
+    pub type Wallet2 = wallet_2::Wallet;
+
+    pub fn compare_wallet(first: &Wallet1, second: &Wallet2) -> bool {
+        first.euro > (second.euro as f32) + (second.cents as f32) / 100.0
+    }
+}
+```
