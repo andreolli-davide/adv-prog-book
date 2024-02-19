@@ -160,7 +160,7 @@ impl<'a> Iterator for ConsIter<'a> {
 }
 ```
 
-## BasicBox Sum (2022/11)
+## BasicBox Sum (2022/11 - 2024/01)
 > Write a function `basicbox_sum` that takes a vector of Strings and returns a vector of Boxes of usizes the returned vector contains all the lengths of the input vector followed by a final element that sums all the previous lengths
 
 ```rust
@@ -274,6 +274,51 @@ impl<T> List<T> {
         }
 
         Some(&current.as_ref().unwrap().elem)
+    }
+}
+```
+
+## Clock (2024/01)
+> Write a two structs: `MasterClock` and `SlaveClock` that both derive `Debug`. `MasterClock` keeps track of a number of clock cycle (in `usize`). The struct has:
+> - [1] a `new()` method that initialize it with clock at zero.
+> - [1] a `tick(&mut self)` method that increase the clock cycle by 1.
+> - [2] a `get_slave(&self)` method that return an object of type `SlaveClock`
+> `SlaveClock` can be built only using the `MasterClock::get_slave(&self)` method, and has a method named [2] `get_clock(&self)` that returns the current clock (that automatically sinks with the master clock).
+
+```rust
+use std::{rc::Rc, cell::RefCell};
+
+#[derive(Debug)]
+struct MasterClock {
+    count: Rc<RefCell<usize>>
+}
+
+#[derive(Debug)]
+struct SlaveClock {
+    count: Rc<RefCell<usize>>
+}
+
+impl MasterClock {
+    fn new() -> Self {
+        Self {
+            count: Rc::new(RefCell::new(0))
+        }
+    }
+
+    fn tick(&self) -> () {
+        *self.count.borrow_mut() += 1;
+    }
+
+    fn get_slave(&self) -> SlaveClock {
+        SlaveClock {
+            count: self.count.clone()
+        }
+    }
+}
+
+impl SlaveClock {
+    fn get_clock(&self) -> usize {
+        *self.count.borrow()
     }
 }
 ```
